@@ -27,6 +27,8 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 player.jump()
+            if event.key == pygame.K_s:
+                player.fall()
 
     # Horizontal movement events
     keys = pygame.key.get_pressed()
