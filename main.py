@@ -8,13 +8,14 @@ from settings import *
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
-player = Player(60, 600, 50, 50, RED, 5)
+player = Player(60, 500, 40, 40, RED, 5)
 
 # Platforms
 platforms = [
     Platform(0, 600, SCREEN_WIDTH, 20, BLACK),  # Ground platform
     Platform(200, 500, 200, 20, BLACK),  # Raised platform
-    Platform(600, 400, 200, 20, BLACK),  # Another raised platform
+    Platform(400, 400, 200, 20, BLACK),  # Another raised platform
+    Platform(800, 200, 10, 600, BLACK),  # Tall platform
 ]
 
 # Game loop
@@ -46,7 +47,7 @@ while running:
 
     screen.fill(WHITE)
     for platform in platforms:
-        pygame.draw.rect(screen, BLACK, platform)
+        pygame.draw.rect(screen, platform.color, platform)
     player.draw(screen)
     pygame.display.update()
     clock.tick(60)

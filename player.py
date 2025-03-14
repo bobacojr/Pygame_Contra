@@ -12,6 +12,9 @@ class Player:
         self.on_object = False
         self.target_platform = None
         self.current_platform = None
+        self.current_wall = None
+        self.wall_jump_used = False
+        self.on_wall = False
 
     def move(self, dx):
         """ Move the player horizontally by dx units """
@@ -22,6 +25,15 @@ class Player:
         if self.on_object: # If standing on something...
             self.y_velocity = self.jump_strength # Upwards velocity is now -10...
             self.on_object = False # Reset to false...
+            self.wall_jump_used = False # Reset to false...
+        elif self.on_wall and not self.wall_jump_used:
+            self.y_velocity = self.jump_strength
+            self.on_wall = False
+            self.wall_jump_used = True
+            if self.rect.left < self.current_wall.rect.left:
+                self.move(-2)
+            else: 
+                self.move(2)
 
     def fall(self):
         """ Let the player fall through a platform if they are grounded """
@@ -30,25 +42,26 @@ class Player:
             self.on_object = False # Player is no longer on the platform...
 
     def update(self, platforms):
-        print(f'PlayerX: {self.rect.x}, PlayerY: {self.rect.y}')
         self.y_velocity += self.gravity # Gravity slowly pulls player downwards after jumping...
         self.rect.y += self.y_velocity # Update y position to the new position...
         self.on_object = False # Reset the flag before checking for collisions...
 
         for platform in platforms:
             """ Snap the player ontop of platforms on collision """
-            print(f'Player Bottom: {self.rect.bottom}, Platform Top: {platform.rect.top}')
             if platform == self.target_platform: # Continue if the platform is the target platform...
                 continue
 
-            if self.rect.colliderect(platform): # Player collided with a platform...
-                print(f'Collision detected! Player Bottom: {self.rect.bottom}, Platform Top: {platform.rect.top}')
-                if self.y_velocity >= 0 and self.rect.bottom >= platform.rect.top - 100:
-                    print(f'Snapping to platform! Player Bottom: {self.rect.bottom}, Platform Top: {platform.rect.top}')
+            if self.rect.colliderect(platform.rect): # Player collided with a platform...
+                if self.y_velocity >= 0 and self.rect.bottom >= platform.rect.top and self.rect.bottom <= platform.rect.top + 20:
                     self.rect.bottom = platform.rect.top # Move the bottom of the player to the top of the platform...
                     self.y_velocity = 0
                     self.on_object = True
                     self.current_platform = platform # Track the current platform...
+                    self.target_platform = None # Reset the target_platform...
+                    self.wall_jump_used = False # Reset wall jump...
+                elif self.rect.bottom > platform.rect.top and self.rect.top < platform.rect.bottom:
+                    self.on_wall = True
+                    self.current_wall = platform
         
         if self.target_platform and not self.rect.colliderect(self.target_platform): # If player is not on the target_platform set it to None
             self.target_platform = None
