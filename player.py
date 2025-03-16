@@ -18,6 +18,9 @@ class Player:
         self.on_wall = False
         self.facing = "right"
         self.bullets = []
+        self.health = 3
+        self.invincible = False
+        self.invincibility_timer = 0
 
     def shoot(self):
         keys = py.key.get_pressed()
@@ -68,6 +71,9 @@ class Player:
         self.y_velocity += self.gravity # Gravity slowly pulls player downwards after jumping...
         self.rect.y += self.y_velocity # Update y position to the new position...
         self.on_object = False # Reset the flag before checking for collisions...
+
+        if self.invincible and py.time.get_ticks() > self.invincibility_timer:
+            self.invincible = False
 
         for platform in platforms:
             """ Snap the player ontop of platforms on collision """

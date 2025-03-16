@@ -20,9 +20,20 @@ platforms = [
 ]
 
 enemies = [
-    Enemy(300, 550, 40, 40, GREEN, 3),
+    Enemy(300, 550, 40, 40, GREEN, 2),
     Enemy(700, 300, 40, 40, GREEN, 2)
 ]
+
+def draw_health():
+    # Draw health text
+    font = pygame.font.Font(None, 30)  # Create font object (size 30)
+    health_text = font.render("Player Health:", True, BLACK)
+    screen.blit(health_text, (10, 10))
+
+    # Draw red circles (hearts)
+    for i in range(player.health):
+        pygame.draw.circle(screen, RED, (165 + i * 30, 20), 10)  # Spaced out
+
 
 # Game loop
 running = True
@@ -53,6 +64,22 @@ while running:
 
     player.update(platforms)
 
+    for enemy in enemies[:]:
+        if player.rect.colliderect(enemy.rect):
+            if not player.invincible:
+                player.health -= 1
+                player.invincible = True
+                player.invincibility_timer = pygame.time.get_ticks() + 1000  # 1 second
+
+            # Bounce the enemy back
+            enemy.direction *= -1  # Reverse direction
+            enemy.rect.y -= 30  # Move enemy up slightly
+            enemy.rect.x += enemy.direction * 20  # Move enemy away from player
+
+            if player.health <= 0:
+                print("Game Over")
+                running = False
+
     for bullet in player.bullets[:]:
         bullet.update()
         if (bullet.rect.right < 0 or
@@ -68,11 +95,10 @@ while running:
                     player.bullets.remove(bullet)
                     break
 
-# Update enemies (before screen.fill())
+    screen.fill(WHITE)
     for enemy in enemies:
         enemy.update(platforms)
 
-    screen.fill(WHITE)
     for platform in platforms:
         pygame.draw.rect(screen, platform.color, platform)
 
@@ -82,6 +108,9 @@ while running:
         enemy.draw(screen)
     for bullet in player.bullets:
         bullet.draw(screen)
+
+    draw_health()
+
     pygame.display.update()
     clock.tick(60)
 
