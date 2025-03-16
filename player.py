@@ -1,5 +1,6 @@
 import pygame as py
 from settings import *
+from bullet import Bullet
 
 class Player:
     def __init__(self, x, y, width, height, color, speed):
@@ -15,10 +16,32 @@ class Player:
         self.current_wall = None
         self.wall_jump_used = False
         self.on_wall = False
+        self.facing = "right"
+        self.bullets = []
+
+    def shoot(self):
+        keys = py.key.get_pressed()
+
+        # Get direction from pressed keys
+        dx, dy = 0, 0
+        if keys[py.K_d]: dx += 1
+        if keys[py.K_a]: dx -= 1
+        if keys[py.K_w]: dy -= 1
+        if keys[py.K_s]: dy += 1
+
+        if dx == 0 and dy == 0:
+            dx = 1 if self.facing == "right" else -1
+
+        bullet = Bullet(self.rect.centerx, self.rect.centery, (dx, dy))
+        self.bullets.append(bullet)
 
     def move(self, dx):
         """ Move the player horizontally by dx units """
         self.rect.x += dx * self.speed
+        if dx < 0:
+            self.facing = "left"
+        elif dx > 0:
+            self.facing = "right"
 
     def jump(self):
         """ Let the player jump if they are grounded """

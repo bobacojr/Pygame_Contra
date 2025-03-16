@@ -3,6 +3,7 @@ import sys
 from player import Player
 from platforms import Platform
 from settings import *
+from enemy import Enemy
 
 # Initialize pygame
 pygame.init()
@@ -18,6 +19,11 @@ platforms = [
     Platform(800, 200, 10, 600, BLACK),  # Tall platform
 ]
 
+enemies = [
+    Enemy(300, 550, 40, 40, GREEN, 3),
+    Enemy(700, 300, 40, 40, GREEN, 2)
+]
+
 # Game loop
 running = True
 while running:
@@ -30,6 +36,8 @@ while running:
                 player.jump()
             if event.key == pygame.K_s:
                 player.fall()
+            if event.key == pygame.K_k:
+                player.shoot()
 
     # Horizontal movement events
     keys = pygame.key.get_pressed()
@@ -45,10 +53,35 @@ while running:
 
     player.update(platforms)
 
+    for bullet in player.bullets[:]:
+        bullet.update()
+        if (bullet.rect.right < 0 or
+                bullet.rect.left > SCREEN_WIDTH or
+                bullet.rect.bottom < 0 or
+                bullet.rect.top > SCREEN_HEIGHT):
+            player.bullets.remove(bullet)
+        else:
+            # Check bullet-enemy collisions
+            for enemy in enemies[:]:
+                if bullet.rect.colliderect(enemy.rect):
+                    enemies.remove(enemy)
+                    player.bullets.remove(bullet)
+                    break
+
+# Update enemies (before screen.fill())
+    for enemy in enemies:
+        enemy.update(platforms)
+
     screen.fill(WHITE)
     for platform in platforms:
         pygame.draw.rect(screen, platform.color, platform)
+
     player.draw(screen)
+
+    for enemy in enemies:
+        enemy.draw(screen)
+    for bullet in player.bullets:
+        bullet.draw(screen)
     pygame.display.update()
     clock.tick(60)
 
