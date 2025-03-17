@@ -63,8 +63,8 @@ class Player:
 
     def fall(self):
         """ Let the player fall through a platform if they are grounded """
-        if self.on_object and self.current_platform:
-            self.target_platform = self.current_platform # Player is targetting the platform they are standing on...
+        if self.on_object and self.current_platform and self.current_platform.kind != "floor":
+            self.target_platform = self.current_platform # Player is targeting the platform they are standing on...
             self.on_object = False # Player is no longer on the platform...
 
     def update(self, platforms):

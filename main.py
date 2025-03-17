@@ -13,7 +13,7 @@ player = Player(60, 500, 40, 40, RED, 5)
 
 # Platforms
 platforms = [
-    Platform(0, 600, SCREEN_WIDTH, 20, BLACK),  # Ground platform
+    Platform(0, 600, SCREEN_WIDTH, 20, BLACK, "floor"),  # Ground platform
     Platform(200, 500, 200, 20, BLACK),  # Raised platform
     Platform(400, 400, 200, 20, BLACK),  # Another raised platform
     Platform(800, 200, 10, 600, BLACK),  # Tall platform
