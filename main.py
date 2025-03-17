@@ -72,7 +72,6 @@ while running:
                 player.invincibility_timer = pygame.time.get_ticks() + 1000  # 1 second
 
             # Bounce the enemy back
-            enemy.direction *= -1  # Reverse direction
             enemy.rect.y -= 30  # Move enemy up slightly
             enemy.rect.x += enemy.direction * 20  # Move enemy away from player
 
