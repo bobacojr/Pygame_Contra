@@ -26,6 +26,7 @@ class Player:
         self.animation_speed = 8
         self.is_moving = False
         self.is_jumping = False
+        self.is_prone = False
 
     def add_animation(self, state, images):
         """Add an animation sequence for a specific state."""
@@ -39,7 +40,9 @@ class Player:
 
     def move(self, dx):
         """ Move the player horizontally by dx units """
-        if self.is_sprinting:
+        if self.is_prone:
+            current_speed = 0
+        elif self.is_sprinting:
             current_speed = self.sprint_speed
         else:
             current_speed = self.speed
@@ -56,7 +59,12 @@ class Player:
             self.is_moving = False
     
     def update_animation(self):
-        if self.is_jumping:
+        if self.is_prone:
+            if self.facing_right:
+                self.set_animation('prone_right')
+            else:
+                self.set_animation('prone_left')
+        elif self.is_jumping:
             if self.facing_right:
                 self.set_animation('roll_right')
             else:

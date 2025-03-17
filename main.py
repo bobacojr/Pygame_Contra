@@ -18,6 +18,8 @@ player.add_animation("roll_left", ["images/RollLeft/RollLeft_1.gif", "images/Rol
 player.add_animation("roll_right", ["images/RollRight/RollRight_1.gif", "images/RollRight/RollRight_2.gif", "images/RollRight/RollRight_3.gif", "images/RollRight/RollRight_4.gif"])
 player.add_animation("sprint_right", ["images/RunRight/RunRight_1.gif", "images/RunRight/RunRight_2.gif", "images/RunRight/RunRight_3.gif", "images/RunRight/RunRight_4.gif", "images/RunRight/RunRight_5.gif", "images/RunRight/RunRight_6.gif", ])
 player.add_animation("sprint_left", ["images/RunLeft/RunLeft_1.gif", "images/RunLeft/RunLeft_2.gif", "images/RunLeft/RunLeft_3.gif", "images/RunLeft/RunLeft_4.gif", "images/RunLeft/RunLeft_5.gif", "images/RunLeft/RunLeft_6.gif", ])
+player.add_animation("prone_left", ["images/ProneLeft/ProneLeft.gif"])
+player.add_animation("prone_right", ["images/ProneRight/ProneRight.gif"])
 
 # Platforms
 platforms = [
@@ -49,6 +51,8 @@ while running:
         dx = 1
 
     player.is_sprinting = keys[pygame.K_LSHIFT]
+    player.is_prone = keys[pygame.K_LCTRL]
+
     player.move(dx)
 
     if player.rect.left < 0:
