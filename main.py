@@ -10,7 +10,7 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
-player = Player(60, 500, 80, 100, 7)
+player = Player(60, 500, 80, 100, 7, 5)
 player.add_animation("idle_left", ["images/IdleLeft/IdleLeft_1.gif", "images/IdleLeft/IdleLeft_2.gif"])
 player.add_animation("idle_right", ["images/IdleRight/IdleRight_1.gif", "images/IdleRight/IdleRight_2.gif"])
 player.add_animation("walk_left", ["images/WalkLeft/WalkLeft_1.gif", "images/WalkLeft/WalkLeft_2.gif", "images/WalkLeft/WalkLeft_3.gif"])
