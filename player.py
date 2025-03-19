@@ -124,10 +124,6 @@ class Player:
         if keys[py.K_d]: dx += 1
         if keys[py.K_a]: dx -= 1
         if keys[py.K_w]: dy -= 1
-        if keys[py.K_s]: dy += 1
-
-        if dx == 0 and dy == 0:
-            dx = 1 if self.facing == "right" else -1
 
         bullet = Bullet(self.rect.centerx, self.rect.centery, (dx, dy))
         self.bullets.append(bullet)

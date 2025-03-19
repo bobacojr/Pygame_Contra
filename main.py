@@ -31,8 +31,9 @@ platforms = [
 ]
 
 enemies = [
-    Enemy(300, 550, 40, 40, GREEN, 2),
-    Enemy(700, 300, 40, 40, GREEN, 2)
+    Enemy(300, 300, 40, 80, GREEN, 2),
+    Enemy(700, 400, 40, 80, GREEN, 2),
+    Enemy(250, 400, 40, 80, GREEN, 0)
 ]
 
 def draw_health():
@@ -128,6 +129,12 @@ while running:
         bullet.draw(screen)
 
     draw_health()
+
+    if not enemies:
+        print("You Win!")
+        pygame.quit()
+        sys.exit()
+
 
     pygame.display.update()
     clock.tick(60)
