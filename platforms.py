@@ -1,12 +1,11 @@
 import pygame
 
 class Platform:
-    def __init__(self, x, y, width, height, color, kind=None):
+    def __init__(self, x, y, width, height, texture, kind=None):
         self.rect = pygame.Rect(x, y, width, height)
-        self.color = color
-        self.rect.top = y
-        self.rect.bottom = y + height
+        self.texture = pygame.image.load(texture)  # Load the texture image
+        self.texture = pygame.transform.scale(self.texture, (width, height))
         self.kind = kind
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
+        screen.blit(self.texture, self.rect.topleft)

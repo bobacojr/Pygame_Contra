@@ -47,7 +47,7 @@ class Player:
     def move(self, dx):
         """ Move the player horizontally by dx units """
         if self.is_prone:
-            current_speed = 0
+            return
         elif self.is_sprinting:
             current_speed = self.sprint_speed
         else:
@@ -125,7 +125,10 @@ class Player:
         if keys[py.K_a]: dx -= 1
         if keys[py.K_w]: dy -= 1
 
-        bullet = Bullet(self.rect.centerx, self.rect.centery, (dx, dy))
+        if dx == 0:
+            dx = 1 if self.facing == 'right' else -1
+
+        bullet = Bullet(self.rect.centerx, self.rect.centery, (dx, dy), self.facing, self.is_prone)
         self.bullets.append(bullet)
 
     def fall(self):

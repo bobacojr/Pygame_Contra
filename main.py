@@ -9,6 +9,8 @@ from enemy import Enemy
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
+background_texture = pygame.image.load("images/M.jpg")
+background_texture = pygame.transform.scale(background_texture, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 player = Player(60, 500, 80, 100, 7, 5)
 player.add_animation("idle_left", ["images/IdleLeft/IdleLeft_1.gif", "images/IdleLeft/IdleLeft_2.gif"])
@@ -24,10 +26,10 @@ player.add_animation("prone_right", ["images/ProneRight/ProneRight.gif"])
 
 # Platforms
 platforms = [
-    Platform(0, 600, SCREEN_WIDTH, 20, BLACK, "floor"),  # Ground platform
-    Platform(200, 500, 200, 20, BLACK),  # Raised platform
-    Platform(400, 400, 200, 20, BLACK),  # Another raised platform
-    Platform(800, 200, 10, 600, BLACK),  # Tall platform
+    Platform(0, 600, SCREEN_WIDTH, 600, "images/R.png", "floor"),  # Ground platform
+    Platform(200, 500, 200, 20, 'images/R.png'),  # Raised platform
+    Platform(400, 400, 200, 20, 'images/R.png'),  # Another raised platform
+    Platform(800, 200, 10, 600, 'images/R.png'),  # Tall platform
 ]
 
 enemies = [
@@ -45,7 +47,6 @@ def draw_health():
     # Draw red circles (hearts)
     for i in range(player.health):
         pygame.draw.circle(screen, RED, (165 + i * 30, 20), 10)  # Spaced out
-
 
 # Game loop
 running = True
@@ -72,7 +73,6 @@ while running:
 
     player.is_sprinting = keys[pygame.K_LSHIFT]
     player.is_prone = keys[pygame.K_LCTRL]
-
     player.move(dx)
 
     if player.rect.left < 0:
@@ -81,8 +81,9 @@ while running:
         player.rect.right = SCREEN_WIDTH
 
     player.update(platforms)
-    player.draw(screen)
-    pygame.display.flip()
+
+    for enemy in enemies:
+        enemy.update(platforms)
 
     for enemy in enemies[:]:
         if player.rect.colliderect(enemy.rect):
@@ -97,7 +98,7 @@ while running:
 
             if player.health <= 0:
                 print("Game Over")
-                running = False
+                #running = False
 
     for bullet in player.bullets[:]:
         bullet.update()
@@ -113,18 +114,17 @@ while running:
                     enemies.remove(enemy)
                     player.bullets.remove(bullet)
                     break
-
-    screen.fill(WHITE)
-    for enemy in enemies:
-        enemy.update(platforms)
+    
+    screen.blit(background_texture, (0, 0))
 
     for platform in platforms:
-        pygame.draw.rect(screen, platform.color, platform)
-
-    player.draw(screen)
+        platform.draw(screen)
 
     for enemy in enemies:
         enemy.draw(screen)
+
+    player.draw(screen)
+
     for bullet in player.bullets:
         bullet.draw(screen)
 
@@ -134,7 +134,6 @@ while running:
         print("You Win!")
         pygame.quit()
         sys.exit()
-
 
     pygame.display.update()
     clock.tick(60)
