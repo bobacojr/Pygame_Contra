@@ -1,7 +1,6 @@
 import pygame
 from settings import *
 
-
 class Enemy:
     def __init__(self, x, y, width, height, color, speed):
         self.rect = pygame.Rect(x, y, width, height)
@@ -11,6 +10,31 @@ class Enemy:
         self.y_velocity = 0
         self.gravity = 0.5
         self.on_ground = False
+
+        # Animation system
+        self.animations = {}
+        self.current_animation = "idle_right"
+        self.current_image = 0
+        self.animation_frame = 0
+        self.animation_speed = 8
+        self.facing_right = True
+
+    def add_animation(self, state, images):
+        """Add an animation sequence for a specific state."""
+        self.animations[state] = [pygame.image.load(img) for img in images]
+
+    def set_animation(self, animation):
+        """Set the current animation state."""
+        if animation in self.animations and animation != self.current_animation:
+            self.current_animation = animation
+            self.current_image = 0
+
+    def update_animation(self):
+        """Update the animation frame."""
+        self.animation_frame += 1
+        if self.animation_frame >= self.animation_speed:
+            self.animation_frame = 0
+            self.current_image = (self.current_image + 1) % len(self.animations[self.current_animation])
 
     def update(self, platforms):
         # Apply gravity
@@ -40,5 +64,28 @@ class Enemy:
         if self.rect.right >= SCREEN_WIDTH or self.rect.left <= 0:
             self.direction *= -1
 
+        # Update facing direction
+        if self.direction == 1:
+            self.facing_right = True
+        else:
+            self.facing_right = False
+
+        # Update animation
+        if self.facing_right:
+            self.set_animation("walk_right")
+        else:
+            self.set_animation("walk_left")
+
+        self.update_animation()
+
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
+        """Draw the enemy with the current animation frame."""
+        current_frame = self.animations[self.current_animation][self.current_image]
+        if self.facing_right:
+            offset_x = 90
+        else:
+            offset_x = 20
+        offset_y = 80
+        sprite_x = self.rect.x - offset_x
+        sprite_y = self.rect.y - offset_y
+        screen.blit(current_frame, (sprite_x, sprite_y))

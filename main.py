@@ -12,6 +12,7 @@ clock = pygame.time.Clock()
 background_texture = pygame.image.load("images/Background.gif")
 background_texture = pygame.transform.scale(background_texture, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
+# Player
 player = Player(60, 300, 80, 100, 7, 4)
 player.add_animation("idle_left", ["images/Player/IdleLeft/IdleLeft_1.gif", "images/Player/IdleLeft/IdleLeft_2.gif"])
 player.add_animation("idle_right", ["images/Player/IdleRight/IdleRight_1.gif", "images/Player/IdleRight/IdleRight_2.gif"])
@@ -45,11 +46,17 @@ logical_water_y = 700
 logical_water_height = SCREEN_HEIGHT - logical_water_y
 logical_water = pygame.Rect(0, logical_water_y, SCREEN_WIDTH, logical_water_height)
 
+
+# Enemies
 enemies = [
-    Enemy(300, 300, 40, 80, GREEN, 2),
+    Enemy(300, 300, 80, 100, GREEN, 2),
     Enemy(700, 400, 40, 80, GREEN, 2),
-    Enemy(250, 400, 40, 80, GREEN, 0)
+    Enemy(250, 400, 40, 80, GREEN, 2)
 ]
+
+for enemy in enemies:
+    enemy.add_animation("walk_right", ["images/Enemies/WalkRight/WalkRight1.gif", "images/Enemies/WalkRight/WalkRight2.gif", "images/Enemies/WalkRight/WalkRight3.gif"])
+    enemy.add_animation("walk_left", ["images/Enemies/WalkLeft/WalkLeft1.gif", "images/Enemies/WalkLeft/WalkLeft2.gif", "images/Enemies/WalkLeft/WalkLeft3.gif"])
 
 def draw_health():
     # Draw health text

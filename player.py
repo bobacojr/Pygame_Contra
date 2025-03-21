@@ -194,7 +194,6 @@ class Player:
     def draw(self, screen):
         """Draw the player on the screen."""
         current_state = self.animations[self.current_animation]
-        sprite_height = current_state[self.current_image].get_height()
         if self.facing_right:
             offset_x = 90
         else:
@@ -202,4 +201,4 @@ class Player:
         sprite_x = self.rect.x - offset_x
         sprite_y = self.rect.y - 80
         screen.blit(current_state[self.current_image], (sprite_x, sprite_y))
-        py.draw.rect(screen, (255, 0, 0), self.rect, 2)
+        #py.draw.rect(screen, (255, 0, 0), self.rect, 2)
