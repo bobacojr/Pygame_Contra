@@ -11,13 +11,14 @@ class Player:
         self.sprint_speed = speed * 1.4
         self.y_velocity = 0
         self.gravity = 0.5
-        self.jump_strength = -11
+        self.jump_strength = -13
         self.on_object = False
         self.target_platform = None
         self.current_platform = None
         self.current_wall = None
         self.wall_jump_used = False
         self.on_wall = False
+        self.in_water = False
         self.invincible = False
         self.bullets = []
         self.health = 3
@@ -72,7 +73,12 @@ class Player:
         self.rect.x += dx * self.speed
 
     def update_animation(self):
-        if self.is_prone:
+        if self.in_water:
+            if self.facing_right:
+                self.set_animation('water_right')
+            else:
+                self.set_animation('water_left')
+        elif self.is_prone:
             if self.facing_right:
                 self.set_animation('prone_right')
             else:
@@ -137,11 +143,16 @@ class Player:
             self.target_platform = self.current_platform # Player is targeting the platform they are standing on...
             self.on_object = False # Player is no longer on the platform...
 
-    def update(self, platforms):
+    def update(self, platforms, water):
         self.y_velocity += self.gravity # Gravity slowly pulls player downwards after jumping...
         self.rect.y += self.y_velocity # Update y position to the new position...
         self.on_object = False # Reset the flag before checking for collisions...
         self.on_wall = False
+
+        if self.rect.colliderect(water):
+            self.in_water = True
+        else:
+            self.in_water = False
 
         if self.invincible and py.time.get_ticks() > self.invincibility_timer:
             self.invincible = False
@@ -189,6 +200,6 @@ class Player:
         else:
             offset_x = 20
         sprite_x = self.rect.x - offset_x
-        sprite_y = self.rect.y - (sprite_height - self.rect.height)
+        sprite_y = self.rect.y - 80
         screen.blit(current_state[self.current_image], (sprite_x, sprite_y))
-        #py.draw.rect(screen, (255, 0, 0), self.rect, 2)
+        py.draw.rect(screen, (255, 0, 0), self.rect, 2)

@@ -9,28 +9,41 @@ from enemy import Enemy
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
-background_texture = pygame.image.load("images/M.jpg")
+background_texture = pygame.image.load("images/Background.gif")
 background_texture = pygame.transform.scale(background_texture, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-player = Player(60, 500, 80, 100, 7, 5)
-player.add_animation("idle_left", ["images/IdleLeft/IdleLeft_1.gif", "images/IdleLeft/IdleLeft_2.gif"])
-player.add_animation("idle_right", ["images/IdleRight/IdleRight_1.gif", "images/IdleRight/IdleRight_2.gif"])
-player.add_animation("walk_left", ["images/WalkLeft/WalkLeft_1.gif", "images/WalkLeft/WalkLeft_2.gif", "images/WalkLeft/WalkLeft_3.gif"])
-player.add_animation("walk_right", ["images/WalkRight/WalkRight_1.gif", "images/WalkRight/WalkRight_2.gif", "images/walkRight/WalkRight_3.gif"])
-player.add_animation("roll_left", ["images/RollLeft/RollLeft_1.gif", "images/RollLeft/RollLeft_2.gif", "images/RollLeft/RollLeft_3.gif", "images/RollLeft/RollLeft_4.gif"])
-player.add_animation("roll_right", ["images/RollRight/RollRight_1.gif", "images/RollRight/RollRight_2.gif", "images/RollRight/RollRight_3.gif", "images/RollRight/RollRight_4.gif"])
-player.add_animation("sprint_right", ["images/RunRight/RunRight_1.gif", "images/RunRight/RunRight_2.gif", "images/RunRight/RunRight_3.gif", "images/RunRight/RunRight_4.gif", "images/RunRight/RunRight_5.gif", "images/RunRight/RunRight_6.gif", ])
-player.add_animation("sprint_left", ["images/RunLeft/RunLeft_1.gif", "images/RunLeft/RunLeft_2.gif", "images/RunLeft/RunLeft_3.gif", "images/RunLeft/RunLeft_4.gif", "images/RunLeft/RunLeft_5.gif", "images/RunLeft/RunLeft_6.gif", ])
-player.add_animation("prone_left", ["images/ProneLeft/ProneLeft.gif"])
-player.add_animation("prone_right", ["images/ProneRight/ProneRight.gif"])
+player = Player(60, 300, 80, 100, 7, 4)
+player.add_animation("idle_left", ["images/Player/IdleLeft/IdleLeft_1.gif", "images/Player/IdleLeft/IdleLeft_2.gif"])
+player.add_animation("idle_right", ["images/Player/IdleRight/IdleRight_1.gif", "images/Player/IdleRight/IdleRight_2.gif"])
+player.add_animation("walk_left", ["images/Player/WalkLeft/WalkLeft_1.gif", "images/Player/WalkLeft/WalkLeft_2.gif", "images/Player/WalkLeft/WalkLeft_3.gif"])
+player.add_animation("walk_right", ["images/Player/WalkRight/WalkRight_1.gif", "images/Player/WalkRight/WalkRight_2.gif", "images/Player/walkRight/WalkRight_3.gif"])
+player.add_animation("roll_left", ["images/Player/RollLeft/RollLeft_1.gif", "images/Player/RollLeft/RollLeft_2.gif", "images/Player/RollLeft/RollLeft_3.gif", "images/Player/RollLeft/RollLeft_4.gif"])
+player.add_animation("roll_right", ["images/Player/RollRight/RollRight_1.gif", "images/Player/RollRight/RollRight_2.gif", "images/Player/RollRight/RollRight_3.gif", "images/Player/RollRight/RollRight_4.gif"])
+player.add_animation("sprint_right", ["images/Player/RunRight/RunRight_1.gif", "images/Player/RunRight/RunRight_2.gif", "images/Player/RunRight/RunRight_3.gif", "images/Player/RunRight/RunRight_4.gif", "images/Player/RunRight/RunRight_5.gif", "images/Player/RunRight/RunRight_6.gif", ])
+player.add_animation("sprint_left", ["images/Player/RunLeft/RunLeft_1.gif", "images/Player/RunLeft/RunLeft_2.gif", "images/Player/RunLeft/RunLeft_3.gif", "images/Player/RunLeft/RunLeft_4.gif", "images/Player/RunLeft/RunLeft_5.gif", "images/Player/RunLeft/RunLeft_6.gif", ])
+player.add_animation("prone_left", ["images/Player/ProneLeft/ProneLeft.gif"])
+player.add_animation("prone_right", ["images/Player/ProneRight/ProneRight.gif"])
+player.add_animation("water_left", ["images/Player/WaterMovement/WaterLeft.gif"])
+player.add_animation("water_right", ["images/Player/WaterMovement/WaterRight.gif"])
 
 # Platforms
 platforms = [
-    Platform(0, 600, SCREEN_WIDTH, 600, "images/R.png", "floor"),  # Ground platform
-    Platform(200, 500, 200, 20, 'images/R.png'),  # Raised platform
-    Platform(400, 400, 200, 20, 'images/R.png'),  # Another raised platform
-    Platform(800, 200, 10, 600, 'images/R.png'),  # Tall platform
+    Platform(0, 400, SCREEN_WIDTH, 261, ["images/Platforms/MainPlatform/MainPlatform1.gif", "images/Platforms/MainPlatform/MainPlatform2.gif"]),  # Ground platform
+    Platform(248, 480, 200, 158, ['images/200x158yPlatform.png']),
+    Platform(-12, 636, 200, 51, ["images/Platforms/SmallGrass/SmallGrass1.gif", "images/Platforms/SmallGrass/SmallGrass2.gif"]),
 ]
+
+# Decorations
+MainPlatformFlora = pygame.image.load("images/Platforms/MainPlatform/MainPlatformFlora.gif")
+MainPlatformFlora_position = (0, 266)
+
+visual_water_y = 660
+visual_water_height = SCREEN_HEIGHT - visual_water_y
+visual_water = pygame.Rect(0, visual_water_y, SCREEN_WIDTH, visual_water_height)
+
+logical_water_y = 700
+logical_water_height = SCREEN_HEIGHT - logical_water_y
+logical_water = pygame.Rect(0, logical_water_y, SCREEN_WIDTH, logical_water_height)
 
 enemies = [
     Enemy(300, 300, 40, 80, GREEN, 2),
@@ -80,7 +93,10 @@ while running:
     if player.rect.right > SCREEN_WIDTH:
         player.rect.right = SCREEN_WIDTH
 
-    player.update(platforms)
+    player.update(platforms, logical_water)
+
+    for platform in platforms:
+        platform.update()
 
     for enemy in enemies:
         enemy.update(platforms)
@@ -96,8 +112,8 @@ while running:
             enemy.rect.y -= 30  # Move enemy up slightly
             enemy.rect.x += enemy.direction * 20  # Move enemy away from player
 
-            if player.health <= 0:
-                print("Game Over")
+            #if player.health <= 0:
+               #print("Game Over")
                 #running = False
 
     for bullet in player.bullets[:]:
@@ -114,8 +130,11 @@ while running:
                     enemies.remove(enemy)
                     player.bullets.remove(bullet)
                     break
-    
+
     screen.blit(background_texture, (0, 0))
+    screen.blit(MainPlatformFlora, MainPlatformFlora_position)
+
+    pygame.draw.rect(screen, (0, 78, 152), visual_water)
 
     for platform in platforms:
         platform.draw(screen)
