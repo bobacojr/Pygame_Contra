@@ -5,6 +5,8 @@ from platforms import Platform
 from settings import *
 from enemy import Enemy
 
+CURRENT_LEVEL = 1
+
 # Initialize pygame
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -46,17 +48,41 @@ logical_water_y = 700
 logical_water_height = SCREEN_HEIGHT - logical_water_y
 logical_water = pygame.Rect(0, logical_water_y, SCREEN_WIDTH, logical_water_height)
 
+def apply_animations(enemies):
+    for enemy in enemies:
+        enemy.add_animation("walk_right", ["images/Enemies/WalkRight/WalkRight1.gif", "images/Enemies/WalkRight/WalkRight2.gif", "images/Enemies/WalkRight/WalkRight3.gif"])
+        enemy.add_animation("walk_left", ["images/Enemies/WalkLeft/WalkLeft1.gif", "images/Enemies/WalkLeft/WalkLeft2.gif", "images/Enemies/WalkLeft/WalkLeft3.gif"])
 
 # Enemies
-enemies = [
-    Enemy(300, 300, 80, 100, GREEN, 2),
-    Enemy(700, 400, 40, 80, GREEN, 2),
-    Enemy(250, 400, 40, 80, GREEN, 2)
-]
+levels = {
+    1: [
+        Enemy(300, 300, 80, 100, GREEN, 2),
+        Enemy(700, 400, 40, 80, GREEN, 2),
+        Enemy(250, 400, 40, 80, GREEN, 2)
+    ],
+    2: [
+        Enemy(300, 300, 80, 100, GREEN, 2),
+        Enemy(700, 400, 40, 80, GREEN, 2),
+        Enemy(250, 400, 40, 80, GREEN, 2)
+    ],
+3: [
+        Enemy(300, 300, 80, 100, GREEN, 4),
+        Enemy(700, 400, 40, 80, GREEN, 4),
+        Enemy(250, 400, 40, 80, GREEN, 4),
+Enemy(550, 400, 40, 80, GREEN, 4)
+    ]
+}
 
-for enemy in enemies:
-    enemy.add_animation("walk_right", ["images/Enemies/WalkRight/WalkRight1.gif", "images/Enemies/WalkRight/WalkRight2.gif", "images/Enemies/WalkRight/WalkRight3.gif"])
-    enemy.add_animation("walk_left", ["images/Enemies/WalkLeft/WalkLeft1.gif", "images/Enemies/WalkLeft/WalkLeft2.gif", "images/Enemies/WalkLeft/WalkLeft3.gif"])
+enemies = levels.get(CURRENT_LEVEL, [])
+apply_animations(enemies)
+
+def init_player_for_level(level):
+    if level == 1:
+        player.rect.x, player.rect.y = 60, 300
+    elif level == 2:
+        player.rect.x, player.rect.y = 100, 300
+
+init_player_for_level(CURRENT_LEVEL)
 
 def draw_health():
     # Draw health text
@@ -122,10 +148,6 @@ while running:
             enemy.rect.y -= 30  # Move enemy up slightly
             enemy.rect.x += enemy.direction * 20  # Move enemy away from player
 
-            #if player.health <= 0:
-               #print("Game Over")
-                #running = False
-
     for bullet in player.bullets[:]:
         bullet.update()
         if (bullet.rect.right < 0 or
@@ -160,9 +182,14 @@ while running:
     draw_health()
 
     if not enemies:
-        print("You Win!")
-        pygame.quit()
-        sys.exit()
+        CURRENT_LEVEL += 1
+        if CURRENT_LEVEL > len(levels):  # End game if there are no more levels
+            print("Game Over, you win!!")
+            pygame.quit()
+            sys.exit()
+        enemies = levels[CURRENT_LEVEL]
+        apply_animations(enemies)
+        init_player_for_level(CURRENT_LEVEL)
 
     pygame.display.update()
 
