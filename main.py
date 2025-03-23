@@ -61,7 +61,7 @@ for enemy in enemies:
 def draw_health():
     # Draw health text
     font = pygame.font.Font(None, 30)  # Create font object (size 30)
-    health_text = font.render("Player Health:", True, BLACK)
+    health_text = font.render("Player Health:", True, WHITE)
     screen.blit(health_text, (10, 10))
 
     # Draw red circles (hearts)
