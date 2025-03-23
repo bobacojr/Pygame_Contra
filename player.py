@@ -45,7 +45,7 @@ class Player:
             self.current_animation = animation
             self.current_image = 0
 
-    def move(self, dx):
+    def move(self, dx, delta_time):
         """ Move the player horizontally by dx units """
         if self.is_prone:
             return
@@ -54,7 +54,7 @@ class Player:
         else:
             current_speed = self.speed
 
-        self.rect.x += dx * current_speed
+        self.rect.x += dx * current_speed * delta_time * 60  # Multiply by 60 to maintain similar speed to before
 
         if dx != 0:
             self.is_moving = True
@@ -69,8 +69,6 @@ class Player:
             self.facing = "left"
         elif dx > 0:
             self.facing = "right"
-
-        self.rect.x += dx * self.speed
 
     def update_animation(self):
         if self.in_water:
@@ -118,9 +116,9 @@ class Player:
             self.wall_jump_used = True
             self.is_jumping = True
             if self.rect.left < self.current_wall.rect.left:
-                self.move(-2)
+                self.move(-2, 1/60)  # Pass 1/60 as delta time for wall jump
             else: 
-                self.move(2)
+                self.move(2, 1/60)  # Pass 1/60 as delta time for wall jump
 
     def shoot(self):
         keys = py.key.get_pressed()
@@ -143,9 +141,9 @@ class Player:
             self.target_platform = self.current_platform # Player is targeting the platform they are standing on...
             self.on_object = False # Player is no longer on the platform...
 
-    def update(self, platforms, water):
-        self.y_velocity += self.gravity # Gravity slowly pulls player downwards after jumping...
-        self.rect.y += self.y_velocity # Update y position to the new position...
+    def update(self, platforms, water, delta_time):
+        self.y_velocity += self.gravity * delta_time * 60  # Multiply by 60 to maintain similar gravity to before
+        self.rect.y += self.y_velocity * delta_time * 60  # Multiply by 60 to maintain similar movement to before
         self.on_object = False # Reset the flag before checking for collisions...
         self.on_wall = False
 

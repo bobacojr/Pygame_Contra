@@ -36,11 +36,11 @@ class Enemy:
             self.animation_frame = 0
             self.current_image = (self.current_image + 1) % len(self.animations[self.current_animation])
 
-    def update(self, platforms):
+    def update(self, platforms, delta_time):
         # Apply gravity
         if not self.on_ground:
-            self.y_velocity += self.gravity
-        self.rect.y += self.y_velocity
+            self.y_velocity += self.gravity * delta_time * 60  # Multiply by 60 to maintain similar gravity to before
+        self.rect.y += self.y_velocity * delta_time * 60  # Multiply by 60 to maintain similar movement to before
         self.on_ground = False  # Reset ground check
 
         # Platform collision
@@ -58,7 +58,7 @@ class Enemy:
             self.on_ground = True
 
         # Horizontal movement
-        self.rect.x += self.direction * self.speed
+        self.rect.x += self.direction * self.speed * delta_time * 60  # Multiply by 60 to maintain similar speed to before
 
         # Reverse direction at screen edges
         if self.rect.right >= SCREEN_WIDTH or self.rect.left <= 0:

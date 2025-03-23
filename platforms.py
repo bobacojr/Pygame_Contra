@@ -24,9 +24,9 @@ class Platform:
             self.current_animation = animation
             self.current_image = 0
 
-    def update(self):
+    def update(self, delta_time):
         """Update the animation frame."""
-        self.animation_frame += 1
+        self.animation_frame += delta_time * 60  # Multiply by 60 to maintain similar animation speed to before
         if self.animation_frame >= self.animation_speed:
             self.animation_frame = 0
             self.current_image = (self.current_image + 1) % len(self.animations[self.current_animation])

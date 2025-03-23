@@ -71,6 +71,9 @@ def draw_health():
 # Game loop
 running = True
 while running:
+    # Calculate delta time in seconds
+    delta_time = clock.tick(60) / 1000.0  # Convert milliseconds to seconds
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -93,20 +96,20 @@ while running:
 
     player.is_sprinting = keys[pygame.K_LSHIFT]
     player.is_prone = keys[pygame.K_LCTRL]
-    player.move(dx)
+    player.move(dx, delta_time)
 
     if player.rect.left < 0:
         player.rect.left = 0
     if player.rect.right > SCREEN_WIDTH:
         player.rect.right = SCREEN_WIDTH
 
-    player.update(platforms, logical_water)
+    player.update(platforms, logical_water, delta_time)
 
     for platform in platforms:
-        platform.update()
+        platform.update(delta_time)
 
     for enemy in enemies:
-        enemy.update(platforms)
+        enemy.update(platforms, delta_time)
 
     for enemy in enemies[:]:
         if player.rect.colliderect(enemy.rect):
@@ -162,7 +165,6 @@ while running:
         sys.exit()
 
     pygame.display.update()
-    clock.tick(60)
 
 pygame.quit()
 sys.exit()
